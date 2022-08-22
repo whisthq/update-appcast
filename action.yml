@@ -34,36 +34,37 @@ inputs:
       already been set.
     required: false
 
-steps:
-  - name: Create temporary directory
-    run: echo APPCAST_TEMP_DIR="$(mktemp -d)" >> "$GITHUB_ENV"
-    shell: bash
+runs:
+  using: composite
+  steps:
+    - name: Create temporary directory
+      run: echo "APPCAST_TEMP_DIR=$(mktemp -d)" >> "$GITHUB_ENV"
+      shell: bash
 
-  - name: Generate appcast.xml
-    run: >-
-      ./generate-appcast.sh
-          "$APPCAST_TEMP_DIR"
-          "${{ inputs.version }}"
-          "${{ inputs.bucket }}"
-          "${{ inputs.object-key }}"
-          "${{ inputs.sparkle-sig-file }}"
-        | tee "$APPCAST_TEMP_DIR/appcast.xml"
-    shell: bash
+    - name: Generate appcast.xml
+      run:
+        ./generate-appcast.sh
+            "${{ inputs.version }}"
+            "${{ inputs.bucket }}"
+            "${{ inputs.object-key }}"
+            "${{ inputs.sparkle-sig-file }}"
+          | tee "$APPCAST_TEMP_DIR/appcast.xml"
+      shell: bash
 
-  - name: Upload appcast.xml to S3
-    run: |
-      if [ -n "${{ inputs.aws-access-key-id }}" ]; then
-          AWS_ACCESS_KEY_ID="${{ inputs.aws-access-key-id }}"
-      fi
+    - name: Upload appcast.xml to S3
+      run: |
+        if [ -n "${{ inputs.aws-access-key-id }}" ]; then
+            export AWS_ACCESS_KEY_ID="${{ inputs.aws-access-key-id }}"
+        fi
 
-      if [ -n "${{ inputs.aws-secret-access-key }}" ]; then
-          AWS_SECRET_ACCESS_KEY="${{ inputs.aws-secret-access-key }}"
-      fi
+        if [ -n "${{ inputs.aws-secret-access-key }}" ]; then
+            export AWS_SECRET_ACCESS_KEY="${{ inputs.aws-secret-access-key }}"
+        fi
 
-      aws s3 cp "$APPCAST_TEMP_DIR/appcast.xml" "s3://${{ inputs.bucket }}"
-    shell: bash
+        aws s3 cp "$APPCAST_TEMP_DIR/appcast.xml" "s3://${{ inputs.bucket }}"
+      shell: bash
 
-  - name: Clean up
-    run: rm -rf "$APPCAST_TEMP_DIR"
-    if: always()
-    shell: bash
+    - name: Clean up
+      run: rm -rf "$APPCAST_TEMP_DIR"
+      if: always()
+      shell: bash

@@ -5,11 +5,13 @@
 #
 # Copyright 2022 Whist Technologies, Inc.
 
-set -u
+set -eu
 
-if [ "$#" -ne "3" ]; then
-    test "$#" -gt "3" && echo "Error: Too many arguments"
-    test "$#" -lt "3" && echo "Error: Too few arguments"
+NARGS=4
+
+if [ "$#" -ne "$NARGS" ]; then
+    test "$#" -gt "$NARGS" && echo "Error: Too many arguments"
+    test "$#" -lt "$NARGS" && echo "Error: Too few arguments"
     echo "Usage: $0 <version> <bucket-name> <object-key> <sig-file>"
     exit 1
 fi
@@ -22,7 +24,7 @@ SIGNATURE_FILE="$4"
 DOWNLOAD_LINK="https://$S3_BUCKET_NAME.s3.amazonaws.com/$S3_OBJECT_KEY"
 
 XSLT_PARAMS="$(
-    cat "$SIGNATURE_FILE" | sed -E 's/([^ ]+)=([^ ]+)/--stringparam \1 \2/g'
+    cat "$SIGNATURE_FILE" | sed -E 's/([^ ]+)=([^ ]+)/--param \1 \2/g'
 )"
 
 xsltproc $XSLT_PARAMS <<EOF \
