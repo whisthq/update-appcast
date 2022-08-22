@@ -1,0 +1,69 @@
+# action.yml
+#
+# Copyright 2022 Whist Technologies, Inc.
+
+name: Update appcast
+description: Publish a new version of appcast.xml containing the latest updates.
+author: Whist Technologies, Inc.
+
+inputs:
+  version:
+    descrption: The latest version of Whist
+    required: true
+  bucket:
+    description: >-
+      The name of the S3 bucket that will host the application DMG and
+      appcast.xml
+    required: true
+  object-key:
+    description: The name of the DMG file object in S3
+    required: true
+  sparkle-sig-file:
+    description: >-
+      The path to the file containing the Sparkle signature data produced by the
+      create_dist GN target
+    required: true
+  aws-access-key-id:
+    description: >-
+      Your AWS access key ID. Only required if AWS credentials have not already
+      been set.
+    required: false
+  aws-secret-access-key:
+    description: >-
+      Your AWS secret access key. Only required if AWS credentials have not
+      already been set.
+    required: false
+
+steps:
+  - name: Create temporary directory
+    run: echo APPCAST_TEMP_DIR="$(mktemp -d)" >> "$GITHUB_ENV"
+    shell: bash
+
+  - name: Generate appcast.xml
+    run: >-
+      ./generate-appcast.sh
+          "$APPCAST_TEMP_DIR"
+          "${{ inputs.version }}"
+          "${{ inputs.bucket }}"
+          "${{ inputs.object-key }}"
+          "${{ inputs.sparkle-sig-file }}"
+        | tee "$APPCAST_TEMP_DIR/appcast.xml"
+    shell: bash
+
+  - name: Upload appcast.xml to S3
+    run: |
+      if [ -n "${{ inputs.aws-access-key-id }}" ]; then
+          AWS_ACCESS_KEY_ID="${{ inputs.aws-access-key-id }}"
+      fi
+
+      if [ -n "${{ inputs.aws-secret-access-key }}" ]; then
+          AWS_SECRET_ACCESS_KEY="${{ inputs.aws-secret-access-key }}"
+      fi
+
+      aws s3 cp "$APPCAST_TEMP_DIR/appcast.xml" "s3://${{ inputs.bucket }}"
+    shell: bash
+
+  - name: Clean up
+    run: rm -rf "$APPCAST_TEMP_DIR"
+    if: always()
+    shell: bash
