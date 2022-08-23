@@ -14,7 +14,7 @@ The static file in S3 acts as an RSS feed that is read by the Sparkle update cli
 
     # The name of the S3 bucket that will host the DMG and appcast.xml
     # Required
-    bucket: "whist-browser-macos-arm64-prod
+    bucket: "whist-browser-macos-arm64-prod"
 
     # The name of the DMG file in S3
     # Required
@@ -43,6 +43,6 @@ The static file in S3 acts as an RSS feed that is read by the Sparkle update cli
   with:
     version: "3.2.1"
     bucket: "whist-browser-macos-arm64-prod"
-    object-name: Whist-3.2.1-arm64.dmg
-    sparkle-sig-file: "/path/to/src/out/Release/Whist Browser.dmg.eddsa
+    object-name: "Whist-3.2.1-arm64.dmg"
+    sparkle-sig-file: "/path/to/src/out/Release/Whist Browser.dmg.eddsa"
 ```
