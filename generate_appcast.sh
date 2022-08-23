@@ -1,5 +1,5 @@
 #!/bin/bash
-# generate-appcast.sh
+# generate_appcast.sh
 # Generate an appcast.xml file containing a single entry for the latest version
 # of Whist. Print XML to standard output.
 #
