@@ -41,10 +41,17 @@ runs:
       run: echo "APPCAST_TEMP_DIR=$(mktemp -d)" >> "$GITHUB_ENV"
       shell: bash
 
+    - name: Format version
+      run:
+        echo "CF_BUNDLE_VERSION=$(
+            ./format_version.py "${{ inputs.version }}"
+        )" | tee -a "$GITHUB_ENV"
+      shell: bash
+
     - name: Generate appcast.xml
       run:
         ./generate_appcast.sh
-            "${{ inputs.version }}"
+            "$CF_BUNDLE_VERSION"
             "${{ inputs.bucket }}"
             "${{ inputs.object-key }}"
             "${{ inputs.sparkle-sig-file }}"

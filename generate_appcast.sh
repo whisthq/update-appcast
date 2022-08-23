@@ -28,7 +28,7 @@ XSLT_PARAMS="$(
 )"
 
 xsltproc $XSLT_PARAMS <<EOF \
-	 --stringparam version "$CF_BUNDLE_VERSION" \
+	 --stringparam version "$VERSION" \
 	 --stringparam download-link "$DOWNLOAD_LINK" \
 	 template.xsl - \
     | xmllint --format --encode UTF-8 -
