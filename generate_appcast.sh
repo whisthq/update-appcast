@@ -24,7 +24,7 @@ SIGNATURE_FILE="$4"
 DOWNLOAD_LINK="https://$S3_BUCKET_NAME.s3.amazonaws.com/$S3_OBJECT_KEY"
 
 XSLT_PARAMS="$(
-    cat "$SIGNATURE_FILE" | sed -E 's/([^ ]+)=([^ ]+)/--param \1 \2/g'
+    cat "$SIGNATURE_FILE" | sed -E 's/([^ ]+)=(\"[^ ]+\")/--param \1 \2/g'
 )"
 
 xsltproc $XSLT_PARAMS <<EOF \
