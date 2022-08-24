@@ -42,6 +42,7 @@ runs:
       shell: bash
 
     - name: Format version
+      working-directory: ${{ github.action_path }}
       run:
         echo "CF_BUNDLE_VERSION=$(
             ./format_version.py "${{ inputs.version }}"
@@ -49,6 +50,7 @@ runs:
       shell: bash
 
     - name: Generate appcast.xml
+      working-directory: ${{ github.action_path }}
       run:
         ./generate_appcast.sh
             "$CF_BUNDLE_VERSION"
