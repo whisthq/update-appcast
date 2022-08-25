@@ -5,7 +5,7 @@
 #
 # Copyright 2022 Whist Technologies, Inc.
 
-set -eu
+set -euo pipefail
 
 NARGS=4
 
