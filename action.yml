@@ -5,6 +5,8 @@
 name: Update appcast
 description: Publish a new version of appcast.xml containing the latest updates.
 author: Whist Technologies, Inc.
+icon: cast
+color: blue
 
 inputs:
   version:
