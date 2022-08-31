@@ -57,6 +57,7 @@ runs:
       working-directory: ${{ github.action_path }}
       run:
         ./generate_appcast.sh
+            "${{ inputs.version }}"
             "$CF_BUNDLE_VERSION"
             "${{ inputs.bucket }}"
             "${{ inputs.object-key }}"

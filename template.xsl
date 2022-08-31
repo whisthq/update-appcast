@@ -9,6 +9,7 @@ Copyright 2022 Whist Technologies, Inc.
 
 <xsl:transform version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <xsl:param name="version" />
+  <xsl:param name="short-version" />
   <xsl:param name="download-link" />
   <xsl:param name="sparkle:edSignature" />
   <xsl:param name="length" />
@@ -24,6 +25,9 @@ Copyright 2022 Whist Technologies, Inc.
 	  <sparkle:version>
 	    <xsl:value-of select="$version" />
 	  </sparkle:version>
+	  <sparkle:shortVersionString>
+	    <xsl:value-of select="$short-version" />
+	  </sparkle:shortVersionString>
 	  <enclosure type="application/octet-stream">
 	    <xsl:attribute name="url">
 	      <xsl:value-of select="$download-link" />

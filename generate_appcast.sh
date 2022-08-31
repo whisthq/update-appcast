@@ -7,19 +7,20 @@
 
 set -euo pipefail
 
-NARGS=4
+NARGS=5
 
 if [ "$#" -ne "$NARGS" ]; then
     test "$#" -gt "$NARGS" && echo "Error: Too many arguments"
     test "$#" -lt "$NARGS" && echo "Error: Too few arguments"
-    echo "Usage: $0 <version> <bucket-name> <object-key> <sig-file>"
+    echo "Usage: $0 <human-version> <machine-version> <bucket-name> <object-key> <sig-file>"
     exit 1
 fi
 
-VERSION="$1"
-S3_BUCKET_NAME="$2"
-S3_OBJECT_KEY="$3"
-SIGNATURE_FILE="$4"
+HUMAN_VERSION="$1"
+MACHINE_VERSION="$2"
+S3_BUCKET_NAME="$3"
+S3_OBJECT_KEY="$4"
+SIGNATURE_FILE="$5"
 
 DOWNLOAD_LINK="https://$S3_BUCKET_NAME.s3.amazonaws.com/$S3_OBJECT_KEY"
 
@@ -28,7 +29,8 @@ XSLT_PARAMS="$(
 )"
 
 xsltproc $XSLT_PARAMS <<EOF \
-	 --stringparam version "$VERSION" \
+	 --stringparam version "$MACHINE_VERSION" \
+	 --stringparam short-version "$HUMAN_VERSION" \
 	 --stringparam download-link "$DOWNLOAD_LINK" \
 	 template.xsl - \
     | xmllint --format --encode UTF-8 -
