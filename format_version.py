@@ -6,6 +6,11 @@
 # Copyright 2022 Whist Technologies, Inc.
 
 import argparse
+import re
+
+WHIST_VERSION_PATTERN = re.compile(
+    "(\d+)\.(\d+)\.(\d+)(?:-(dev|staging)-rc\.(\d+))?"
+)
 
 def format_version(version):
     """Replicate the transformation applied by _OverrideVersionKey.
@@ -17,11 +22,20 @@ def format_version(version):
     that same transformation here.
     """
 
-    version_parts = version.split(".")
+    match = WHIST_VERSION_PATTERN.fullmatch(version)
 
-    if int(version_parts[0]) >= 1:
-        major = int(version_parts[1]) + (100 * int(version_parts[0]))
-        return str(major) + "." + version_parts[2]
+    if match is None:
+        raise Exception(f"Failed to parse version string \"{version}\"")
+
+    major, minor, patch, channel, prerelease = match.groups("")
+    version = f"{int(major) * 100 + int(minor)}.{patch}"
+
+    if channel == "dev":
+        assert prerelease is not None
+        version += f".2.{prerelease}"
+    elif channel == "staging":
+        assert prerelease is not None
+        version += f".1.{prerelease}"
 
     return version
 
@@ -32,7 +46,8 @@ def main():
     )
     parser.add_argument(
         "version",
-        help="The release version as specified in package.json")
+        help="The release version as specified in package.json",
+    )
 
     args = parser.parse_args()
 
