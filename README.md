@@ -6,7 +6,7 @@ The static file in S3 acts as an RSS feed that is read by the Sparkle update cli
 # Usage
 
 ```yaml
-- uses: whisthq/update-appcast@v0.1
+- uses: whisthq/update-appcast@v0.2
   with:
     # The latest version of Whist
     # Required
@@ -36,13 +36,24 @@ The static file in S3 acts as an RSS feed that is read by the Sparkle update cli
 
 # Examples
 
-## Publish Whist stable version 3.2.1 for M1 Macs
+## Publish Whist stable version 3.2.1 for Apple Silicon Macs
 
 ```yaml
-- uses: whisthq/update-appcast@v0.1
+- uses: whisthq/update-appcast@v0.2
   with:
     version: "3.2.1"
     bucket: "whist-browser-macos-arm64-prod"
     object-name: "Whist-3.2.1-arm64.dmg"
-    sparkle-sig-file: "/path/to/src/out/Release/Whist Browser.dmg.eddsa"
+    sparkle-sig-file: "/path/to/src/out/Release_arm64/Whist Browser.dmg.eddsa"
+```
+
+## Publish Whist staging version 3.2.1 prerelease 4 for Intel Macs
+
+```yaml
+- uses: whisthq/update-appcast@v0.2
+  with:
+    version: "3.2.1-staging-rc.4"
+    object-name: "Whist-Beta-3.2.1-staging-rc.4-x64.dmg"
+    sparkle-sig-file: "/path/to/src/out/Release/Whist Browser Beta.dmg.eddsa"
+    ...
 ```
