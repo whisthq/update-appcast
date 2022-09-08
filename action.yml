@@ -47,10 +47,11 @@ runs:
 
     - name: Format version
       working-directory: ${{ github.action_path }}
-      run:
-        echo "CF_BUNDLE_VERSION=$(
-            ./format_version.py "${{ inputs.version }}"
-        )" | tee -a "$GITHUB_ENV"
+      run: |
+        # Assign to an intermediate variable so the step fails if
+        # format_version.py returns non-zero.
+        CF_BUNDLE_VERSION="$(./format_version.py "${{ inputs.version }}")"
+        echo "CF_BUNDLE_VERSION=$CF_BUNDLE_VERSION" | tee -a "$GITHUB_ENV"
       shell: bash
 
     - name: Generate appcast.xml
