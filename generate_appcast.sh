@@ -28,12 +28,9 @@ XSLT_PARAMS="$(
     cat "$SIGNATURE_FILE" | sed -E 's/([^ ]+)=(\"[^ ]+\")/--param \1 \2/g'
 )"
 
-xsltproc $XSLT_PARAMS <<EOF \
+xsltproc $XSLT_PARAMS \
 	 --stringparam version "$MACHINE_VERSION" \
 	 --stringparam short-version "$HUMAN_VERSION" \
 	 --stringparam download-link "$DOWNLOAD_LINK" \
-	 template.xsl - \
+	 template.xsl version.xml \
     | xmllint --format --encode UTF-8 -
-<?xml version="1.0" encoding="UTF-8"?>
-<empty />
-EOF
